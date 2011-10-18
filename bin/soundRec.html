@@ -111,10 +111,8 @@
 
 <script>
 
-  // receive the SWF object's tag on page
   function GetSWF(strName)
   {
-    //return document.getElementById("qq1");
     if (window.document[strName] != null)
     {
       if (window.document[strName].length == null)
@@ -130,108 +128,6 @@
         return document[strName][1];
     }
   }
-
-  // send simple post or get query to server
-//  function simple_request()
-//  {
-//    // get data from page
-//    var url = jQuery("#url").val();
-//    var method = jQuery("#method").val();
-//    var postData = jQuery("#postData").val();//document.getElementById('postData').value;
-//    if(!postData || postData.length <= 0) postData = null;
-//    var headerData = jQuery("#headerData").val(); //document.getElementById('headerData').value;
-//    if(!headerData || headerData.length <= 0) headerData = null;
-//    var fileField = jQuery("#fileField").val(); //document.getElementById('fileField').value;
-//    if(!fileField || fileField.length <= 0) fileField = null;
-//
-//    jQuery("#report").append(jQuery("<div>").html("<b>simple_request</b>"));
-//    jQuery("#report").append(jQuery("<div>").html("- method=" + method));
-//    jQuery("#report").append(jQuery("<div>").html("- url=" + url));
-//    jQuery("#report").append(jQuery("<div>").html("- postData=" + postData));
-//    jQuery("#report").append(jQuery("<div>").html("- headerData=" + headerData));
-//    jQuery("#report").append(jQuery("<div>").html("- fileField=" + fileField));
-//    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
-//
-//    // call Flash function to send request
-//    console.log("", method, url, postData, headerData, fileField);
-//
-//    GetSWF("netgate").netGateSendRequest(method, url, postData, headerData, fileField);
-//    //GetSWF("netgate").netGateSendRequest("file", "https://api.soundcloud.com/tracks.json", "track[title]=Quick_Fox_Jump_Over_the&track[sharing]=public&oauth_token=1-3168-7336574-22fb8b7d7f4373efa", null, "track[asset_data]");
-//  }
-
-//  // query complete successfully
-//  window.netGateSuccess = function(id, errorCode, data)
-//  {
-//    jQuery("#report").append(jQuery("<div>").html("<span>id=" + id + " &gt;</span> <b>netGateSuccess</b> :"));
-//    jQuery("#report").append(jQuery("<div>").html(data));
-//    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
-//
-//    var obj;
-//    try
-//    {
-//      obj = JSON.parse(data);
-//    }
-//    catch(e) {}
-//    console.log("id:",id," netGateSuccess", data, obj);
-//  };
-//  // query complete with error
-//  window.netGateError = function(id, errorCode)
-//  {
-//    jQuery("#report").append(jQuery("<div>").html("<span>id=" + id + " &gt;</span> <b>netGateError</b>, errorCode=" + errorCode));
-//    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
-//
-//    console.log("id:",id," netGateError", errorCode);
-//  };
-//  // user click on cancel button
-//  window.netGateUserCancel = function(id)
-//  {
-//    jQuery("#report").append(jQuery("<div>").html("<span>id=" + id + " &gt;</span> <b>netGateUserCancel</b>"));
-//    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
-//
-//    console.log("id:",id," netGateUserCancel");
-//  };
-//  // user select file for send
-//  window.netGateUserSelectFile = function(id, fileName,fileSize)
-//  {
-//    jQuery("#report").append(jQuery("<div>").html("<span>id=" + id + " &gt;</span> <b>netGateUserSelectFile</b>, fileName=" + fileName + ", fileSize=" + fileSize));
-//    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
-//
-//    jQuery("#selectedFileName").text(fileName);
-//    console.log("id:",id," netGateUserSelectFile", fileName, fileSize);
-//  };
-//  // start file transfer
-//  window.netGateStartFilePost = function(id, fileName)
-//  {
-//    jQuery("#report").append(jQuery("<div>").html("<span>id=" + id + " &gt;</span> <b>netGateStartFilePost</b>, fileName=" + fileName));
-//    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
-//
-//    console.log("id:",id," netGateStartFilePost", fileName);
-//  };
-//  // transfer progress
-//  window.netGateProgress = function(id, bytesLoaded, bytesTotal)
-//  {
-//    jQuery("#report").append(jQuery("<div>").html("<span>id=" + id + " &gt;</span> <b>netGateProgress</b>, bytesLoaded=" + bytesLoaded + ", bytesTotal=" + bytesTotal));
-//    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
-//
-//    console.log("id:",id," netGateProgress", bytesLoaded, bytesTotal);
-//    jQuery("#zxc").width(300 * bytesLoaded/bytesTotal);
-//  };
-//  window.netGateDebug = function(id, str)
-//  {
-//    console.log("(*) " + str);
-//  };
-//  window.netGateFileNotSelected = function(id)
-//  {
-//    jQuery("#report").append(jQuery("<div>").html("<span>id=" + id + " &gt;</span> <b>netGateFileNotSelected</b>"));
-//    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
-//
-//    console.log("id:",id," netGateFileNotSelected");
-//  };
-
-
-
-
-
 
 
 
@@ -311,7 +207,6 @@
       console.log(url, postData, headerData, fileField);
 
       GetSWF("soundRec").SetPostData(url, postData, headerData, fileField);
-      //GetSWF("soundRec").netGateSendRequest("https://api.soundcloud.com/tracks.json", "track[title]=Quick_Fox_Jump_Over_the&track[sharing]=public&oauth_token=1-3168-7336574-22fb8b7d7f4373efa", null, "track[asset_data]");
 
       jQuery("#report").append(jQuery("<div>").html("<b>SetPostData - ok</b>"));
       jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
@@ -516,6 +411,7 @@
   window.onload = function()
   {
     data_view();
+    //InitSwf();
   };
 
   jQuery(window).resize(function()
@@ -529,17 +425,18 @@
   });
 </script>
 <body>
+<embed type="application/x-shockwave-flash" src="soundRec.swf" width="215" id="movie_player" height="138" flashvars="" allowscriptaccess="always" allowfullscreen="true" bgcolor="#000000">
   <div class="recobj">
     <div>
       <div>
-        <object style="width: 215px; height: 138px;" id="soundRec">
-          <param name="movie" value="soundRec.swf?id=1">
-          <param name="allowFullScreen" value="true">
-          <param name="allowScriptAccess" value="always">
-          <param name="src" value="soundRec.swf?id=1">
-          <param name="wmode" value="opaque">
-          <embed width="55px" height="51px" src="soundRec.swf?id=1" name="soundRec" type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="always" wmode="opaque">
-        </object>
+        <!--<object style="width: 215px; height: 138px;" id="soundRec">-->
+          <!--<param name="movie" value="soundRec.swf?id=1">-->
+          <!--<param name="allowFullScreen" value="true">-->
+          <!--<param name="allowScriptAccess" value="always">-->
+          <!--<param name="src" value="soundRec.swf?id=1">-->
+          <!--<param name="wmode" value="opaque">-->
+          <embed width="215px" height="138px" src="soundRec.swf" name="soundRec" type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="always" bgcolor="#000000">
+        <!--</object>-->
       </div>
     </div>
   </div>
