@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>post test</title>
+</head>
+
+<script src="jquery.js"></script>
+<script src="jquery.cookie.js"></script>
+
+<style type="text/css">
+  .button {
+    background-color: #eee;
+    color: #000;
+    -webkit-border-radius: 3px 3px;
+       -moz-border-radius: 3px 3px;
+         -o-border-radius: 3px 3px;
+            border-radius: 3px 3px;
+    border-color: #808080;
+    border-width: 1px;
+    border-style: solid;
+    display: inline-block;
+    overflow: hidden;;
+    text-align: center;
+    vertical-align: middle;
+    font-family: Tahoma;
+    font-size: 11px;
+    color: #202020;
+    text-decoration: none;
+    padding: 3px 10px;
+
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+        -ms-box-sizing: border-box;
+            box-sizing: border-box;
+
+    background-image: -webkit-linear-gradient( rgb(210,210,210), rgb(250,250,250) );
+    background-image:    -moz-linear-gradient( rgb(210,210,210), rgb(250,250,250) );
+    background-image:      -o-linear-gradient( top, rgb(210,210,210), rgb(250,250,250) );
+    background-image:         linear-gradient( rgb(210,210,210), rgb(250,250,250) );
+  }
+  
+  .button:hover{
+    background-image: -webkit-linear-gradient( rgb(250,250,250), rgb(210,210,210) );
+    background-image:    -moz-linear-gradient( rgb(250,250,250), rgb(210,210,210) );
+    background-image:      -o-linear-gradient( top, rgb(250,250,250), rgb(210,210,210) );
+    background-image:         linear-gradient( rgb(250,250,250), rgb(210,210,210) );
+  }
+  
+  .progress {
+    background-color: #fff;
+    color: #000;
+    -webkit-border-radius: 3px 3px;
+       -moz-border-radius: 3px 3px;
+         -o-border-radius: 3px 3px;
+            border-radius: 3px 3px;
+    border-color: #808080;
+    border-width: 1px;
+    border-style: solid;
+    overflow: hidden;
+  }
+
+  .progress_fill {
+    background-color: #00a000;
+  }
+
+  div.recobj {
+    position:fixed;
+    display:block;
+    width:100%;
+    height:0px;
+    background-color: rgba(0,0,0,0.5);
+    top:-100px;
+    left:0px;
+    overflow: hidden;
+  }
+
+  div.recobj > div {
+    position:relative;
+    display:block;
+    width:100%;
+    height: 100%;
+  }
+  
+  div.recobj > div >  div {
+    position:absolute;
+    display:inline-block;
+    left:50%;
+    top:50%;
+    margin-left:-108px;
+    margin-top:-69px;
+  }
+
+  #report {
+    width:100%;
+    height: 400px;
+    display:block;
+    overflow: scroll;
+  }
+  
+  #report > div {
+    font-family: arial;
+    font-size: 14px;
+    color: #202020;
+  }
+  
+  #report > div > span {
+    color: #006000;
+  }
+</style>
+
+<script>
+
+  // receive the SWF object's tag on page
+  function GetSWF(strName)
+  {
+    //return document.getElementById("qq1");
+    if (window.document[strName] != null)
+    {
+      if (window.document[strName].length == null)
+        return window.document[strName];
+      else
+        return window.document[strName][1];
+    }
+    else
+    {
+      if (document[strName].length == null)
+        return document[strName];
+      else
+        return document[strName][1];
+    }
+  }
+
+  // send simple post or get query to server
+//  function simple_request()
+//  {
+//    // get data from page
+//    var url = jQuery("#url").val();
+//    var method = jQuery("#method").val();
+//    var postData = jQuery("#postData").val();//document.getElementById('postData').value;
+//    if(!postData || postData.length <= 0) postData = null;
+//    var headerData = jQuery("#headerData").val(); //document.getElementById('headerData').value;
+//    if(!headerData || headerData.length <= 0) headerData = null;
+//    var fileField = jQuery("#fileField").val(); //document.getElementById('fileField').value;
+//    if(!fileField || fileField.length <= 0) fileField = null;
+//
+//    jQuery("#report").append(jQuery("<div>").html("<b>simple_request</b>"));
+//    jQuery("#report").append(jQuery("<div>").html("- method=" + method));
+//    jQuery("#report").append(jQuery("<div>").html("- url=" + url));
+//    jQuery("#report").append(jQuery("<div>").html("- postData=" + postData));
+//    jQuery("#report").append(jQuery("<div>").html("- headerData=" + headerData));
+//    jQuery("#report").append(jQuery("<div>").html("- fileField=" + fileField));
+//    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
+//
+//    // call Flash function to send request
+//    console.log("", method, url, postData, headerData, fileField);
+//
+//    GetSWF("netgate").netGateSendRequest(method, url, postData, headerData, fileField);
+//    //GetSWF("netgate").netGateSendRequest("file", "https://api.soundcloud.com/tracks.json", "track[title]=Quick_Fox_Jump_Over_the&track[sharing]=public&oauth_token=1-3168-7336574-22fb8b7d7f4373efa", null, "track[asset_data]");
+//  }
+
+//  // query complete successfully
+//  window.netGateSuccess = function(id, errorCode, data)
+//  {
+//    jQuery("#report").append(jQuery("<div>").html("<span>id=" + id + " &gt;</span> <b>netGateSuccess</b> :"));
+//    jQuery("#report").append(jQuery("<div>").html(data));
+//    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
+//
+//    var obj;
+//    try
+//    {
+//      obj = JSON.parse(data);
+//    }
+//    catch(e) {}
+//    console.log("id:",id," netGateSuccess", data, obj);
+//  };
+//  // query complete with error
+//  window.netGateError = function(id, errorCode)
+//  {
+//    jQuery("#report").append(jQuery("<div>").html("<span>id=" + id + " &gt;</span> <b>netGateError</b>, errorCode=" + errorCode));
+//    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
+//
+//    console.log("id:",id," netGateError", errorCode);
+//  };
+//  // user click on cancel button
+//  window.netGateUserCancel = function(id)
+//  {
+//    jQuery("#report").append(jQuery("<div>").html("<span>id=" + id + " &gt;</span> <b>netGateUserCancel</b>"));
+//    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
+//
+//    console.log("id:",id," netGateUserCancel");
+//  };
+//  // user select file for send
+//  window.netGateUserSelectFile = function(id, fileName,fileSize)
+//  {
+//    jQuery("#report").append(jQuery("<div>").html("<span>id=" + id + " &gt;</span> <b>netGateUserSelectFile</b>, fileName=" + fileName + ", fileSize=" + fileSize));
+//    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
+//
+//    jQuery("#selectedFileName").text(fileName);
+//    console.log("id:",id," netGateUserSelectFile", fileName, fileSize);
+//  };
+//  // start file transfer
+//  window.netGateStartFilePost = function(id, fileName)
+//  {
+//    jQuery("#report").append(jQuery("<div>").html("<span>id=" + id + " &gt;</span> <b>netGateStartFilePost</b>, fileName=" + fileName));
+//    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
+//
+//    console.log("id:",id," netGateStartFilePost", fileName);
+//  };
+//  // transfer progress
+//  window.netGateProgress = function(id, bytesLoaded, bytesTotal)
+//  {
+//    jQuery("#report").append(jQuery("<div>").html("<span>id=" + id + " &gt;</span> <b>netGateProgress</b>, bytesLoaded=" + bytesLoaded + ", bytesTotal=" + bytesTotal));
+//    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
+//
+//    console.log("id:",id," netGateProgress", bytesLoaded, bytesTotal);
+//    jQuery("#zxc").width(300 * bytesLoaded/bytesTotal);
+//  };
+//  window.netGateDebug = function(id, str)
+//  {
+//    console.log("(*) " + str);
+//  };
+//  window.netGateFileNotSelected = function(id)
+//  {
+//    jQuery("#report").append(jQuery("<div>").html("<span>id=" + id + " &gt;</span> <b>netGateFileNotSelected</b>"));
+//    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
+//
+//    console.log("id:",id," netGateFileNotSelected");
+//  };
+
+
+
+
+
+
+
+
+  // send simple post or get query to server
+  function simple_request(cmd)
+  {
+    if(cmd == "settings")
+    {
+      jQuery(".recobj").css("top", "0");
+      GetSWF("soundRec").ShowSettings();
+      jQuery(window).trigger("resize");
+    }
+
+    if(cmd == "start")
+    {
+      GetSWF("soundRec").StartRecord();
+    }
+
+    if(cmd == "pause")
+    {
+      GetSWF("soundRec").PauseRecord();
+    }
+
+    if(cmd == "stop")
+    {
+      GetSWF("soundRec").StopRecord();
+    }
+
+    if(cmd == "free")
+    {
+      GetSWF("soundRec").DeleteRecorded();
+    }
+    
+    if(cmd == "encode")
+    {
+      GetSWF("soundRec").Encode();
+    }
+
+    if(cmd == "echo on")
+    {
+      GetSWF("soundRec").Echo("1");
+    }
+
+    if(cmd == "echo off")
+    {
+      GetSWF("soundRec").Echo("0");
+    }
+
+    if(cmd == "play")
+    {
+      GetSWF("soundRec").PlayRecord();
+    }
+
+    if(cmd == "play stop")
+    {
+      GetSWF("soundRec").StopPlaingRecord();
+    }
+
+    if(cmd == "post")
+    {
+      // get data from page
+      var url = jQuery("#url").val();
+      var postData = jQuery("#postData").val();//document.getElementById('postData').value;
+      if(!postData || postData.length <= 0) postData = "";
+      var headerData = jQuery("#headerData").val(); //document.getElementById('headerData').value;
+      if(!headerData || headerData.length <= 0) headerData = "";
+      var fileField = jQuery("#fileField").val();
+
+      jQuery("#report").append(jQuery("<div>").html("<b>simple_request</b>"));
+      jQuery("#report").append(jQuery("<div>").html("- url=" + url));
+      jQuery("#report").append(jQuery("<div>").html("- postData=" + postData));
+      jQuery("#report").append(jQuery("<div>").html("- headerData=" + headerData));
+      jQuery("#report").append(jQuery("<div>").html("- fileField=" + fileField));
+      jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
+
+      // call Flash function to send request
+      console.log(url, postData, headerData, fileField);
+
+      GetSWF("soundRec").SetPostData(url, postData, headerData, fileField);
+      //GetSWF("soundRec").netGateSendRequest("https://api.soundcloud.com/tracks.json", "track[title]=Quick_Fox_Jump_Over_the&track[sharing]=public&oauth_token=1-3168-7336574-22fb8b7d7f4373efa", null, "track[asset_data]");
+
+      jQuery("#report").append(jQuery("<div>").html("<b>SetPostData - ok</b>"));
+      jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
+      console.log("mr_onSettingWindowShown");
+      jQuery(".recobj").css("top", "0");
+      jQuery(window).trigger("resize");
+    }
+  }
+
+
+  window.mr_onRecordStart = function()
+  {
+    jQuery("#report").append(jQuery("<div>").html("<b>mr_onRecordStart</b>"));
+    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
+
+    console.log("mr_onRecordStart");
+  };
+  window.mr_onRecordTime = function(time)
+  {
+    jQuery("#report").append(jQuery("<div>").html("<b>mr_onRecordTime</b> time = " + time));
+    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
+    jQuery("#soundInfo").text(time);
+
+    console.log("mr_onRecordTime time = " + time);
+  };
+  window.mr_onRecordPause = function()
+  {
+    jQuery("#report").append(jQuery("<div>").html("<b>mr_onRecordPause</b>"));
+    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
+
+    console.log("mr_onRecordPause");
+  };
+  window.mr_onRecordRestore = function()
+  {
+    jQuery("#report").append(jQuery("<div>").html("<b>mr_onRecordRestore</b>"));
+    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
+
+    console.log("mr_onRecordRestore");
+  };
+  window.mr_onRecordStop = function(LengthInSeconds)
+  {
+    jQuery("#report").append(jQuery("<div>").html("<b>mr_onRecordStop</b> length=" + LengthInSeconds));
+    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
+
+    console.log("mr_onRecordStop, length=" + LengthInSeconds);
+  };
+  window.mr_onRecordCleared = function()
+  {
+    jQuery("#report").append(jQuery("<div>").html("<b>mr_onRecordCleared</b>"));
+    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
+
+    console.log("mr_onRecordCleared");
+  };
+  window.mr_onEncodeStart = function()
+  {
+    jQuery("#report").append(jQuery("<div>").html("<b>mr_onEncodeStart</b>"));
+    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
+
+    console.log("mr_onEncodeStart");
+  };
+  window.mr_onEncodeProgress = function(percent)
+  {
+    jQuery("#report").append(jQuery("<div>").html("<b>mr_onEncodeProgress</b> - " + percent + "%"));
+    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
+
+    console.log("mr_onEncodeProgress - " + percent + "%");
+    jQuery("#zxc").width(3 * percent);
+  };
+  window.mr_onEncodeError = function(errorText)
+  {
+    jQuery("#report").append(jQuery("<div>").html("<b>mr_onEncodeError</b> text : " + errorText));
+    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
+
+    console.log("mr_onEncodeError text : " + errorText);
+  };
+  window.mr_onEncodeComplete = function()
+  {
+    jQuery("#report").append(jQuery("<div>").html("<b>mr_onEncodeComplete</b>"));
+    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
+
+    console.log("mr_onEncodeComplete");
+  };
+  window.mr_onSettingClose = function()
+  {
+    jQuery(".recobj").css("top", "-100px");
+    jQuery(".recobj").height(0);
+
+    jQuery("#report").append(jQuery("<div>").html("<b>mr_onSettingClose</b>"));
+    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
+
+    console.log("mr_onSettingClose");
+  };
+  window.mr_onPostStart = function()
+  {
+    jQuery(".recobj").css("top", "-100px");
+    jQuery(".recobj").height(0);
+
+    jQuery("#report").append(jQuery("<div>").html("<b>mr_onPostStart</b>"));
+    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
+
+    console.log("mr_onPostStart");
+  };
+  window.mr_onPostProgress = function(loaded, total)
+  {
+    jQuery("#report").append(jQuery("<div>").html("<b>mr_onPostProgress</b> - " + loaded + "/" + total));
+    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
+
+    console.log("mr_onPostProgress - " + loaded + "/" + total);
+  };
+  window.mr_onPostComplete = function(result, data)
+  {
+    jQuery("#report").append(jQuery("<div>").html("<b>mr_onPostComplete</b> result: " + result + ", data:" +  data));
+    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
+
+    console.log("mr_onPostComplete result: " + result + ", data:" +  data);
+  };
+  window.mr_onPostError = function(result)
+  {
+    jQuery("#report").append(jQuery("<div>").html("<b>mr_onPostError</b> result : " + result));
+    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
+
+    console.log("mr_onPostError result : " + result);
+  };
+  window.mr_onNoDataToPost = function()
+  {
+    jQuery("#report").append(jQuery("<div>").html("<b>mr_onNoDataToPost</b>"));
+    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
+
+    console.log("mr_onNoDataToPost");
+  };
+  window.mr_onSettingWindowShown = function()
+  {
+    jQuery("#report").append(jQuery("<div>").html("<b>mr_onSettingWindowShown</b>"));
+    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
+
+    console.log("mr_onSettingWindowShown");
+    jQuery(".recobj").css("top", "0");
+    jQuery(window).trigger("resize");
+  };
+  window.mr_onPlayStart = function()
+  {
+    jQuery("#report").append(jQuery("<div>").html("<b>mr_onPlayStart</b>"));
+    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
+
+    console.log("mr_onPlayStart");
+  };
+  
+  window.mr_onPlayStop = function()
+  {
+    jQuery("#report").append(jQuery("<div>").html("<b>mr_onPlayStop</b>"));
+    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
+
+    console.log("mr_onPlayStop");
+  };
+
+
+
+  function data_view()
+  {
+    var qq;
+    for(qq=1;qq<=5;qq++)
+    {
+      var obj = jQuery.cookie("rec_"+qq+"_url");
+      if(obj!=null) jQuery("#rec"+qq).text("Record " + qq + " - saved");
+      else jQuery("#rec"+qq).text("Record " + qq + " - free");
+    }
+  }
+  function data_save()
+  {
+    var selRecId = jQuery("#saveData").val();
+    jQuery.cookie("rec_"+selRecId+"_url", jQuery("#url").val());
+    jQuery.cookie("rec_"+selRecId+"_method", jQuery("#method").val());
+    jQuery.cookie("rec_"+selRecId+"_postData", jQuery("#postData").val());
+    jQuery.cookie("rec_"+selRecId+"_headerData", jQuery("#headerData").val());
+    jQuery.cookie("rec_"+selRecId+"_fileField", jQuery("#fileField").val());
+
+    data_view();
+  }
+  function data_load()
+  {
+    var selRecId = jQuery("#saveData").val();
+    jQuery("#url").val(jQuery.cookie("rec_"+selRecId+"_url"));
+    jQuery("#method").val(jQuery.cookie("rec_"+selRecId+"_method"));
+    jQuery("#postData").val(jQuery.cookie("rec_"+selRecId+"_postData"));
+    jQuery("#headerData").val(jQuery.cookie("rec_"+selRecId+"_headerData"));
+    jQuery("#fileField").val(jQuery.cookie("rec_"+selRecId+"_fileField"));
+
+    data_view();
+  }
+  function data_delete()
+  {
+    var selRecId = jQuery("#saveData").val();
+    jQuery.cookie("rec_"+selRecId+"_url", null);
+    jQuery.cookie("rec_"+selRecId+"_method", null);
+    jQuery.cookie("rec_"+selRecId+"_postData", null);
+    jQuery.cookie("rec_"+selRecId+"_headerData", null);
+    jQuery.cookie("rec_"+selRecId+"_fileField", null);
+
+    data_view();
+  }
+
+  window.onload = function()
+  {
+    data_view();
+  };
+
+  jQuery(window).resize(function()
+  {
+    var obj = jQuery(".recobj");
+    if(obj.length <= 0) return;
+    if(parseInt(obj.css("top"))<0) return;
+
+    obj.width(jQuery(window).width());
+    obj.height(jQuery(window).height());
+  });
+</script>
+<body>
+  <div class="recobj">
+    <div>
+      <div>
+        <object style="width: 215px; height: 138px;" id="soundRec">
+          <param name="movie" value="soundRec.swf?id=1">
+          <param name="allowFullScreen" value="true">
+          <param name="allowScriptAccess" value="always">
+          <param name="src" value="soundRec.swf?id=1">
+          <param name="wmode" value="opaque">
+          <embed width="55px" height="51px" src="soundRec.swf?id=1" name="soundRec" type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="always" wmode="opaque">
+        </object>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: table; width: 100%">
+    <div style="display: table-cell; width: 40%">
+
+      <div>URL : <input type="text" id="url" value="https://api.soundcloud.com/tracks.json" style="width:70%"/></div>
+
+      <div>Post data (list of parameters to send as POST data, e.g. param1=value1&amp;param2=value2):</div>
+      <textarea id="postData" style="width:90%;height:100px">track[title]=Quick_Fox_Jump_Over_the&track[sharing]=public&oauth_token=1-3168-7336574-8318efa19958fe582</textarea>
+
+      <div>Header data (list of parameters to send in POST header, e.g. param1:value1&amp;param2:value2):</div>
+      <textarea id="headerData" style="width:90%;height:100px"></textarea>
+
+      <div>File field name : <input type="text" id="fileField" value="track[asset_data]" style="width:70%"/></div>
+
+      <div>Sound data:
+        <span id="soundInfo"></span>
+      </div>
+
+      <div>
+        <a href="#" class="button" onclick="simple_request('settings')"/>show settings</a>
+        <a href="#" class="button" onclick="simple_request('echo on')"/>echo on</a>
+        <a href="#" class="button" onclick="simple_request('echo off')"/>echo off</a>
+      </div>
+      <div>
+        <a href="#" class="button" onclick="simple_request('start')"/>start record</a>
+        <a href="#" class="button" onclick="simple_request('pause')"/>pause record</a>
+        <a href="#" class="button" onclick="simple_request('stop')"/>stop record</a>
+      </div>
+      <div>
+        <a href="#" class="button" onclick="simple_request('play')"/>play record</a>
+        <a href="#" class="button" onclick="simple_request('play stop')"/>stop playing</a>
+        <a href="#" class="button" onclick="simple_request('free')"/>clear recorded</a>
+        <a href="#" class="button" onclick="simple_request('encode')"/>encode to MP3</a>
+        <a href="#" class="button" onclick="simple_request('post')"/>do request</a>
+      </div>
+      <hr>
+      <div>
+        Save data
+        <select id="saveData" style="width:300px">
+          <option value="1" id="rec1">Free</option>
+          <option value="2" id="rec2">Free</option>
+          <option value="3" id="rec3">Free</option>
+          <option value="4" id="rec4">Free</option>
+          <option value="5" id="rec5">Free</option>
+        </select>
+        <a href="#" class="button" onclick="data_load()"/>Load</a>
+        <a href="#" class="button" onclick="data_save()"/>Save</a>
+        <a href="#" class="button" onclick="data_delete()"/>Delete</a>
+      </div>
+
+      <div>
+        Progress line:
+        <div style="display:inline-block;width:300px;height:20px" class="progress">
+          <div id="zxc" style="display:inline-block;height:20px" class="progress_fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: table-cell; width: 60%">
+      <div id="report">
+        <div><b>Report (see copy of log in your browser console):</b></div>
+        <!--<div>Для отправки файла, нажмите кнопку Browse для выбора файла, после этого установите Method на значение post_file и нажмите отправить.</div>-->
+        <!--<div>get - обычный GET запрос. При этом POST параметры добавляются к URL.</div>-->
+        <!--<div>post - post-запрос при котором в заголовок добавляются указанные параметры, post-данные отправляются по правилам "multipart/www-form-urlencoded", выбранный файл игнорируется.</div>-->
+        <!--<div>post_file - (в js-вызове указывается метод "file") post-запрос при котором в заголовок добавляются указанные параметры, post-данные отправляются по правилам "multipart/form-data", отправляет файл.</div>-->
+      </div>
+    </div>
+  </div>
+</body>
+</html>
