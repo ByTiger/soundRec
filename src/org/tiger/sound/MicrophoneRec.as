@@ -1,5 +1,7 @@
 ﻿package org.tiger.sound 
 {
+	import flash.external.ExternalInterface;	
+	
 	import fr.kikko.lab.ShineMP3Encoder;	
 	
 	import flash.events.TimerEvent;	
@@ -30,8 +32,9 @@ import flash.utils.getTimer;
 		private var _output : ByteArray;
 		private var _loopBack : Boolean = false;
 		private var _isRecording : Boolean = false;
-		private var _isPausing : Boolean = false;
+//		private var _isPausing : Boolean = false;
 		private var mp3Encoder : ShineMP3Encoder = null;
+		private var _muted : Boolean = true;
 		private var _startTime : uint = 0;
 		private var _fullTime : uint = 0;
 		private var _timer : Timer = null;
@@ -47,7 +50,6 @@ import flash.utils.getTimer;
 		{
 			super(target);
 			_buffer = new ByteArray();
-			_timer = new Timer(300);
 		}
 		
 		
@@ -70,6 +72,11 @@ import flash.utils.getTimer;
 		public function get isRecording() : Boolean
 		{
 			return _isRecording;
+		}
+		
+		public function get isMuted() : Boolean
+		{
+			return _muted;
 		}
 		
 		public function get gain() : uint
@@ -104,7 +111,7 @@ import flash.utils.getTimer;
 		
 		public function get recordTime() : uint
 		{
-			if(_isRecording && !_isPausing)
+			if(_isRecording && _timer && _timer.running)
 				return _fullTime + (getTimer() - _startTime);
 			return _fullTime;
 		}
@@ -128,8 +135,8 @@ import flash.utils.getTimer;
 			_microphone.encodeQuality = 10;
 			_microphone.setLoopBack(_loopBack);
 
+			_muted = true;
 			_isRecording = true;
-			_isPausing = false;
 			_startTime = getTimer();
 			_microphone.addEventListener(StatusEvent.STATUS, onStatus);
 			_microphone.addEventListener(SampleDataEvent.SAMPLE_DATA, onSampleData);
@@ -140,30 +147,9 @@ import flash.utils.getTimer;
 				this.startTimer();
 		}
 		
-		public function Pause() : void
-		{
-			if(!_isRecording) return;
-			if(_isPausing)
-			{
-				_startTime = getTimer();
-				_microphone.addEventListener(SampleDataEvent.SAMPLE_DATA, onSampleData);
-				_isPausing = false;
-				dispatchEvent(new MicrophoneRecEvent(MicrophoneRecEvent.RECORD_RESTORE));
-				this.startTimer();
-			}
-			else
-			{
-				_microphone.removeEventListener(SampleDataEvent.SAMPLE_DATA, onSampleData);
-				_isPausing = true;
-				_fullTime += getTimer() - _startTime;
-				dispatchEvent(new MicrophoneRecEvent(MicrophoneRecEvent.RECORD_PAUSE));
-				this.stopTimer();
-			}
-		}
-		
 		public function Stop() : void
 		{
-			if(!_isPausing) _fullTime += getTimer() - _startTime;
+			this.stopTimer();
 			
 			if(_microphone.hasEventListener(SampleDataEvent.SAMPLE_DATA))
 				_microphone.removeEventListener(SampleDataEvent.SAMPLE_DATA, onSampleData);
@@ -173,10 +159,8 @@ import flash.utils.getTimer;
 			
 			_output = this.createWAVFileData(_buffer, 1);
 			_isRecording = false;
-			_isPausing = false;
 			
 			dispatchEvent(new MicrophoneRecEvent(MicrophoneRecEvent.RECORD_STOP));
-			this.stopTimer();
 		}
 		
 		public function Clear() : void
@@ -203,14 +187,21 @@ import flash.utils.getTimer;
 		
 		private function startTimer() : void
 		{
+			if(_timer) return;
+			
+			_timer = new Timer(300);
 			_timer.addEventListener(TimerEvent.TIMER, OnRecTimer);
 			_timer.start();
+			_startTime = getTimer();
 		}
 		
 		private function stopTimer() : void
 		{
+			if(!_timer) return;
+			_fullTime += getTimer() - _startTime;
 			_timer.stop();
 			_timer.removeEventListener(TimerEvent.TIMER, OnRecTimer);
+			_timer = null;
 		}
 		
 		private function OnRecTimer(event : TimerEvent) : void
@@ -220,15 +211,24 @@ import flash.utils.getTimer;
 		
 		private function onStatus(event : StatusEvent) : void
 		{
-			if(event.code == "Microphone.Unmuted" && !_timer.running) startTimer();
-			if(event.code == "Microphone.Muted" && _timer.running) stopTimer();
+			if(event.code == "Microphone.Unmuted")
+			{
+				_muted = false;
+				startTimer();
+			}
+			if(event.code == "Microphone.Muted")
+			{
+				_muted = true;
+				stopTimer();
+			}
 			
-			//ExternalInterface.call("window.console.log", onStatus);
+			ExternalInterface.call("window.console.log", "onStatus " + event.code + " " + event.level);
 			trace("onStatus : " + event);
 		}
 		
 		private function onSampleData(event : SampleDataEvent) : void
 		{
+			ExternalInterface.call("window.console.log", "onSampleData");
 			while(event.data.bytesAvailable > 0)
 			{
 				_buffer.writeFloat(event.data.readFloat());

@@ -15,8 +15,8 @@
 		static public var ENCODE_START : String = "ENCODE_START";
 		static public var ENCODE_PROGRESS : String = "ENCODE_PROGRESS";
 		static public var ENCODE_COMPLETE : String = "ENCODE_COMPLETE";
-		static public var RECORD_RESTORE : String = "RECORD_RESTORE";
-		static public var RECORD_PAUSE : String = "RECORD_PAUSE";
+//		static public var RECORD_RESTORE : String = "RECORD_RESTORE";
+//		static public var RECORD_PAUSE : String = "RECORD_PAUSE";
 		static public var CLEARED : String = "CLEARED";
 		static public var SETTING_WINDOW : String = "SETTING_WINDOW";
 		
