@@ -1,10 +1,12 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8" />
   <title>post test</title>
 </head>
-
+<!--[if lt IE 9]>
+<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
 <script src="jquery.js"></script>
 <script src="jquery.cookie.js"></script>
 
@@ -232,20 +234,6 @@
 
     console.log("mr_onRecordTime time = " + time);
   };
-  window.mr_onRecordPause = function()
-  {
-    jQuery("#report").append(jQuery("<div>").html("<b>mr_onRecordPause</b>"));
-    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
-
-    console.log("mr_onRecordPause");
-  };
-  window.mr_onRecordRestore = function()
-  {
-    jQuery("#report").append(jQuery("<div>").html("<b>mr_onRecordRestore</b>"));
-    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
-
-    console.log("mr_onRecordRestore");
-  };
   window.mr_onRecordStop = function(LengthInSeconds)
   {
     jQuery("#report").append(jQuery("<div>").html("<b>mr_onRecordStop</b> length=" + LengthInSeconds));
@@ -362,6 +350,14 @@
     console.log("mr_onPlayStop");
   };
 
+  window.mr_onMicrophoneState = function(state)
+  {
+    jQuery("#report").append(jQuery("<div>").html("<b>mr_onMicrophoneState</b> state=" + state));
+    jQuery("#report").attr({ scrollTop: jQuery("#report").attr("scrollHeight") });
+
+    console.log("mr_onMicrophoneState state=" + state);
+  };
+
 
 
   function data_view()
@@ -412,6 +408,8 @@
   {
     data_view();
     //InitSwf();
+//    jQuery("#movie_player").attr("wmode","opaque");
+//    setTimeout(function(){asdasd1();}, 1000);
   };
 
   jQuery(window).resize(function()
@@ -423,9 +421,25 @@
     obj.width(jQuery(window).width());
     obj.height(jQuery(window).height());
   });
+//  function asdasd1()
+//  {
+//    console.log("1");
+//    var obj = jQuery('#movie_player');
+////    obj.attr("width","400").attr("height","400");
+//    obj.width(400).height(400);
+//    setTimeout(function(){asdasd2();}, 1000);
+//  }
+//  function asdasd2()
+//  {
+//    console.log("2");
+//    var obj = jQuery('#movie_player');
+////    obj.attr("width","240").attr("height","240");
+//    obj.width(94).height(22);
+//    setTimeout(function(){asdasd1();}, 1000);
+//  }
 </script>
 <body>
-<embed type="application/x-shockwave-flash" src="soundRec.swf" width="215" id="movie_player" height="138" flashvars="" allowscriptaccess="always" allowfullscreen="true" bgcolor="#000000">
+<!--<embed type="application/x-shockwave-flash" src="soundRec.swf" width="215" id="movie_player" height="138" flashvars="" allowscriptaccess="always" allowfullscreen="true" bgcolor="#000000">-->
   <div class="recobj">
     <div>
       <div>
@@ -465,7 +479,6 @@
       </div>
       <div>
         <a href="#" class="button" onclick="simple_request('start')"/>start record</a>
-        <a href="#" class="button" onclick="simple_request('pause')"/>pause record</a>
         <a href="#" class="button" onclick="simple_request('stop')"/>stop record</a>
       </div>
       <div>
