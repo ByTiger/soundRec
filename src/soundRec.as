@@ -28,6 +28,7 @@
 	 */
 	public class soundRec extends Sprite 
 	{
+		[Embed(source="sc_button.png")] private var _buttonClass : Class;
 		private var _microphoneRec : MicrophoneRec = new MicrophoneRec();
 		private var _useEcho : Boolean = true;
 		private var _postForm : PostFormData = new PostFormData();
@@ -35,6 +36,7 @@
 		private var _post : String = "";
 		private var _header : String = "";
 		private var _fileField : String = "";
+		private var _button : Sprite = null;
 		
 		public function soundRec()
 		{
@@ -45,9 +47,13 @@
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.showDefaultContextMenu = true;
 			stage.focus = this;
-			this.graphics.beginFill(0xffffff,1);
-			this.graphics.drawRect(0, 0, 215, 138);
-			this.graphics.endFill();
+			
+			_button = new Sprite();
+			_button.addChild(new _buttonClass);
+			addChild(_button);
+			_button.buttonMode = true;
+			
+			PrepareBack(215,138);
 			
 			_microphoneRec.addEventListener(MicrophoneRecEvent.RECORD_START, onStart);
 			_microphoneRec.addEventListener(MicrophoneRecEvent.RECORD_TIME, OnRecordTime);
@@ -61,15 +67,14 @@
 			_microphoneRec.addEventListener(MicrophoneRecEvent.ENCODE_COMPLETE, OnEncodeComplete);
 			_microphoneRec.addEventListener(MicrophoneRecEvent.SETTING_WINDOW, OnSettingWindowShown);
 			
-			
 			_postForm.addEventListener(PostFormDataEvent.POST_START, OnPostStart);
 			_postForm.addEventListener(PostFormDataEvent.PROGRESS, OnPostProgress);
 			_postForm.addEventListener(PostFormDataEvent.COMPLETE, OnPostComplete);
 			_postForm.addEventListener(PostFormDataEvent.ERROR, OnPostError);
 			
-			stage.addEventListener(MouseEvent.CLICK, onClick);
-//			ShowSettings();
-
+			_button.addEventListener(MouseEvent.CLICK, onClick);
+			stage.addEventListener(Event.RESIZE, onResize);
+			
 			if(!ExternalInterface.available) return;
 			ExternalInterface.addCallback("StartRecord", StartRecord);
 			ExternalInterface.addCallback("PauseRecord", PauseRecord);
@@ -81,6 +86,22 @@
 			ExternalInterface.addCallback("Encode", Encode);
 			ExternalInterface.addCallback("PlayRecord", Play);
 			ExternalInterface.addCallback("StopPlaingRecord", PlayStop);
+		}
+		
+		private function onResize(e : Event) : void
+		{
+			var ww : int = stage.stageWidth;
+			var hh : int = stage.stageHeight;
+			if(ww > 0 && hh > 0) PrepareBack(ww,hh);
+		}
+		
+		private function PrepareBack(ww : int, hh : int) : void
+		{
+			this.graphics.beginFill(0xffffff,1);
+			this.graphics.drawRect(0, 0, ww, hh);
+			this.graphics.endFill();
+			_button.x = (ww - _button.width) / 2;
+			_button.y = (hh - _button.height) / 2;
 		}
 		
 		private function onClick(e : Event) : void
