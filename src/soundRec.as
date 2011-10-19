@@ -39,6 +39,8 @@
 		private var _header : String = "";
 		private var _fileField : String = "";
 		private var _button : Sprite = null;
+		private var _title : String = "";
+		private var _token : String = "";
 		
 		public function soundRec()
 		{
@@ -81,6 +83,8 @@
 			ExternalInterface.addCallback("DeleteRecorded", DeleteRecorded);
 			ExternalInterface.addCallback("ShowSettings", ShowSettings);
 			ExternalInterface.addCallback("SetPostData", SetPostData);
+			ExternalInterface.addCallback("SetPostTitle", SetPostTitle);
+			ExternalInterface.addCallback("SetPostToken", SetPostToken);
 			ExternalInterface.addCallback("Echo", Echo);
 			ExternalInterface.addCallback("Encode", Encode);
 			ExternalInterface.addCallback("PlayRecord", Play);
@@ -170,8 +174,20 @@
 			_fileField = fileField;
 		}
 		
+		public function SetPostTitle(title : String) : void
+		{
+			_title = title;
+		}
+		
+		public function SetPostToken(token : String) : void
+		{
+			_token = token;
+		}
+		
 		public function Post() : void
 		{
+			if(_title == "" && _token == "" && _post == "") return;
+			
 			if(_microphoneRec.mp3output == null || _microphoneRec.mp3output.length <= 0 || _url == "")
 			{
 				this.onNoDataToPost();
@@ -182,18 +198,27 @@
 			var hinfo : Array;
 			var qq : int;
 			
-			tmp = _post.split("&");
-			for(qq = 0; qq < tmp.length; qq++)
+			if(_post == "")
 			{
-				hinfo = String(tmp[qq]).split("=",2);
-				if(String(hinfo[0]).length > 0)
-					_postForm.addParam(hinfo[0], hinfo[1]);
+				tmp = _post.split("&");
+				for(qq = 0; qq < tmp.length; qq++)
+				{
+					hinfo = String(tmp[qq]).split("=",2);
+					if(String(hinfo[0]).length > 0)
+						_postForm.addParam(hinfo[0], hinfo[1]);
+				}
+			}
+			else
+			{
+				_postForm.addParam("track[title]", _title);
+				_postForm.addParam("track[sharing]", "public");
+				_postForm.addParam("oauth_token", _token);
 			}
 			
 			var fileName : String = this.GenerateFileName();
 			_postForm.addParam("Filename", fileName);
 			_postForm.addFile(fileName, _microphoneRec.mp3output, _fileField);
-			_postForm.Post(_url, _header);
+			_postForm.Post(_url != "" ? _url : "https://api.soundcloud.com/tracks.json", _header);
 		}
 		
 		private function GenerateFileName():String
